@@ -1,0 +1,178 @@
+
+The CibleR js tag will allow you to track user behavior, get targeted promotions based on navigation events and display content configured in CibleR campaigns.
+
+
+# 1 Installation HTML
+You can install the CibleR JavaScript tracking and rendering tag by adding a tag to your website using a tag container or directly on page.
+Replace your customerId (find it here :https://admin.cibler.com/Account/Settings) in the code below.
+
+# Overview
+The CibleR js tag will allow you to track user behavior, get targeted promotions based on navigation events and display content configured in CibleR campaigns.
+
+
+# 1 Installation HTML
+You can install the CibleR JavaScript tracking and rendering tag by adding a tag to your website using a tag container or directly on page.
+Replace your customerId (find it here :https://admin.cibler.com/Account/Settings) in the code below.
+
+    <script async src="https://cdn.cibler.io/static/{{customerId}}/wio.js"></script>
+// Enabling the debug mode flag is useful during implementation,
+// but it's recommended you remove it for production
+you can enable debugmode by setting the querystring ciblerdebug=true in your current url.
+
+Once the initial code snippet has run, the `wio` object is available globally.
+
+# 2. Send Data
+By default CibleR will track the following informations:
+**Navigation Context:**
+- url: the full url with query strings
+- domain: the host domain
+- device: mobile/desktop
+
+**Source :information about the source of trafic**
+- type : (direct/social/organic_search/paid_search/shopping)
+- site : google/facebook/instagram etc...
+- utmSource
+- utmCampaign
+- origin
+
+**Landing Page Context :: All the data above are stored for the current and the user landing page**
+
+**Aggrated data:**
+**Number of events per session/day/total for the following events:**
+- pageView
+- click
+- exit
+  **Session information:**
+- session number
+- session duration
+- time since last Session
+- time since last today
+
+To send a custom event :
+// Enabling the debug mode flag is useful during implementation,
+// but it's recommended you remove it for production
+you can enable debugmode by setting the querystring ciblerdebug=true in your current url.
+
+Once the initial code snippet has run, the `wio` object is available globally.
+
+# 2. Send Data
+By default CibleR will track the following informations:
+**Navigation Context:**
+- url: the full url with query strings
+- domain: the host domain
+- device: mobile/desktop
+
+**Source :information about the source of trafic**
+- type : (direct/social/organic_search/paid_search/shopping)
+- site : google/facebook/instagram etc...
+- utmSource
+- utmCampaign
+- origin
+
+**Landing Page Context :: All the data above are stored for the current and the user landing page**
+
+**Aggrated data:**
+**Number of events per session/day/total for the following events:**
+- pageView
+- click
+- exit
+  **Session information:**
+- session number
+- session duration
+- time since last Session
+- time since last today
+
+To send a custom event :
+
+
+    name="add_to_basket"
+    action="user_clicked"
+    label="onExitPopup"
+    trigger=false
+    wio.track(name,action,label,trigger)
+
+Moving on to campaign triggers.
+
+# 3. Triggers
+A Trigger is an event suceptible of delivering a campaign to an end user. A trigger event will send the latest user data to our server and return the campaigns eligible for display.
+
+The default trigger is the pageview event sent after a page is fully loaded. To add custom triggers call the previous track function with parameter trigger set to "true".
+
+These trigger will result in an API call to https://cibler.io/api/campaigns/eligibility/?customerId={{customerId}}. The result of this api call contains the eligibility of the user to the campaign and information about the incentive.
+
+The tag will automatically make another call to retrieve the content of every eligible campaign and display the content except if the rendering tag is disabled, no content is set or if an external content integration has been setup.
+
+# 4. Advanced features
+In this section you'll set up advanced tracking for your website to take take advantage of the full array of feature available in CibleR.
+These settings can be setup in pure javascript or using a google tag manager as intermediary layer.
+First initialize the advanced context object
+[See advanced tracking setup]
+
+Moving on to campaign triggers.
+
+# 3. Triggers
+A Trigger is an event suceptible of delivering a campaign to an end user. A trigger event will send the latest user data to our server and return the campaigns eligible for display.
+
+The default trigger is the pageview event sent after a page is fully loaded. To add custom triggers call the previous track function with parameter trigger set to "true".
+
+These trigger will result in an API call to https://cibler.io/api/campaigns/eligibility/?customerId={{customerId}}. The result of this api call contains the eligibility of the user to the campaign and information about the incentive.
+
+The tag will automatically make another call to retrieve the content of every eligible campaign and display the content except if the rendering tag is disabled, no content is set or if an external content integration has been setup.
+
+# 4. Advanced features
+In this section you'll set up advanced tracking for your website to take take advantage of the full array of feature available in CibleR.
+These settings can be setup in pure javascript or using a google tag manager as intermediary layer.
+First initialize the advanced context object
+
+    //initialize context object
+    ciblerContext = {}
+​
+# PageType
+Page type is a way to flag the type of page of your website, below is a list of commonly tagged page types
+LOGIN: 'login',
+CUSTOMER_ZONE: 'customer_zone',
+ORDER_CONFIRMATION: 'order_confirmation',
+DELIVERY_CHOICE: 'delivery',
+PAYMENT_CHOICE: 'payment',
+CART: 'cart',
+PRODUCT_PAGE: 'product_page',
+PRODUCT_LIST: 'product_list',
+HOME: 'home',
+SHOWCASE: 'showcase',
+#PageType
+Page type is a way to flag the type of page of your website, below is a list of commonly tagged page types
+LOGIN: 'login',
+CUSTOMER_ZONE: 'customer_zone',
+ORDER_CONFIRMATION: 'order_confirmation',
+DELIVERY_CHOICE: 'delivery',
+PAYMENT_CHOICE: 'payment',
+CART: 'cart',
+PRODUCT_PAGE: 'product_page',
+PRODUCT_LIST: 'product_list',
+HOME: 'home',
+SHOWCASE: 'showcase',
+
+
+
+    ciblerContext.pageType="";
+
+
+# Ecommerce tracking
+**RECOMMANDED METHOD: GTM**
+If your website is using GTM you can setup the ecommerce tracking using this guide
+https://developers.google.com/analytics/devguides/collection/ua/gtm/enhanced-ecommerce
+CibleR will gather Product and Cart data from the GTM datalayer, make sure that the datalayer is set before the cibler tag embed.
+
+**Manual**
+To manually setup the ecommerce tracking add the following code to your pages before cibler is loaded
+# Product
+
+    enter code hereds
+
+# Ecommerce tracking
+**RECOMMANDED METHOD: GTM**
+If your website is using GTM you can setup the ecommerce tracking using this guide
+https://developers.google.com/analytics/devguides/collection/ua/gtm/enhanced-ecommerce
+CibleR will gather Product and Cart data from the GTM datalayer, make sure that the datalayer is set before the cibler tag embed.
+
+**Manual**
