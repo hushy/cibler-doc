@@ -252,6 +252,51 @@ When coupon is not valid
  | products       | List of String | When this list if filled, this means that the coupon is only eligible on the products of the list   | YES       |
  | categories     | List of String | When this list if filled, this means that the coupon is only eligible on the categories of the list | YES       |
 
+# Coupon creation API
+
+### Request example
+Alternatively you can provide an secured API for CibleR to call to create a voucher in your system.
+The api should accept the following request body and create the voucher in your system.
+Response is not required, return status should be 200-OK.
+
+##### Body example
+```JSON
+{
+  "code": "YHBGFREZERFRE",
+  "value": 10,
+  "discountWholeCart" : 1,
+  "name" : "Code 10% CibleR",
+  "startDate”:“2023-12-01T02:00:00.000Z",
+  "discountType": "PERCENT or VALUE",
+  "threshold": 100,
+  "description": "10 %",
+  "combinable": true,
+  "expirationDate": "2019-07-03",
+  "campaignId": 63006938,
+  "customerId": 4,
+  "numberOfUsage": 43,
+  "user": {
+    "email": "john@gmail.com",
+  },
+  "products": [
+    "PS4V2",
+    "XBOXONEX"
+  ],
+  "categories": [
+    "TELEPHONE",
+    "532543"
+  ]
+}
+```
+
+
+##### Properties specifications
+- user can be null
+- products list can be empty. If set it means the created coupon must only be used on the specified produtc
+- categories can be empty. If set, it means the created coupons must only be used on the specified categories
+
+
+
 ### Contact
 If you have any trouble contact us at support@cibler.com
 
