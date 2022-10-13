@@ -1,3 +1,15 @@
+<script src="https://unpkg.com/mermaid@8.9.3/dist/mermaid.min.js"></script>
+<script>
+
+    window.addEventListener("DOMContentLoaded", (event) => {
+        mermaid.initialize({
+            startOnLoad:true,
+            theme: "default",
+        });
+        window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));    });
+</script>
+
+
 # CibleR API implementation documentation
 
 
@@ -57,7 +69,7 @@ Call this API server side (Your Site --> CibleR) for each paid order.
     }
  ```
 
- #### Properties definitions
+#### Properties definitions
 
  |  Property                             | Type    | Description                                           | Mandatory |
  |---------------------------------------|:--------|:------------------------------------------------------|:----------|:---|
@@ -87,92 +99,93 @@ Call this API server side (Your Site --> CibleR) for each paid order.
  | orderInformation.orderLines.sellerId  | Long    | Id of the seller                                      | NO        |
 
 
- ## Automatic coupon generation
- ### Sequence diagram One Coupon OK
+## Automatic coupon generation
+
+### Sequence diagram One Coupon OK
 
  ```mermaid
  sequenceDiagram
- finalUser->>shopify: enter CibleR coupon in the order
- shopify->>shopify: if coupon is not a shopify coupon
- shopify->>backend : POST giftCode/Validate
- backend->>shopify : canUse = true, combinable = true
- shopify->>shopify : create a shopify coupon
- shopify->>shopify : add the coupon to the order
- finalUser->>shopify : make the order with the coupon
- shopify->>backend : POST campaignBehaviors/order with CibleR coupon
+ finalUser->>ecommerce-backend: enter CibleR coupon in the order
+ ecommerce-backend->>ecommerce-backend: if coupon is not a ecommerce-backend coupon
+ ecommerce-backend->>backend : POST giftCode/Validate
+ backend->>ecommerce-backend : canUse = true, combinable = true
+ ecommerce-backend->>ecommerce-backend : create a ecommerce-backend coupon
+ ecommerce-backend->>ecommerce-backend : add the coupon to the order
+ finalUser->>ecommerce-backend : make the order with the coupon
+ ecommerce-backend->>backend : POST campaignBehaviors/order with CibleR coupon
  backend->>backend : Update state giftCode / prize
  ```
 
- ### Sequence diagram Two Coupons OK
+### Sequence diagram Two Coupons OK
 
  ```mermaid
  sequenceDiagram
- finalUser->>shopify: enter coupon A CibleR in the order
- shopify->>shopify: if the coupon is not a shopify coupon
- shopify->>backend : POST giftCode/Validate
- backend->>shopify : canUse = true, combinable = true
- shopify->>shopify : create a shopify coupon
- shopify->>shopify : add the coupon to the order
- finalUser->>shopify: enter coupon B CibleR in the order
- shopify->>shopify: if coupon is not a shopify coupon
- shopify->>backend : POST giftCode/Validate
- backend->>shopify : canUse = true, combinable = true
- shopify->>shopify : create a shopify coupon
- shopify->>shopify : add the coupon to the order
- finalUser->>shopify : make the order with 2 coupons
- shopify->>backend : POST campaignBehaviors/order with CibleR coupons
+ finalUser->>ecommerce-backend: enter coupon A CibleR in the order
+ ecommerce-backend->>ecommerce-backend: if the coupon is not a ecommerce-backend coupon
+ ecommerce-backend->>backend : POST giftCode/Validate
+ backend->>ecommerce-backend : canUse = true, combinable = true
+ ecommerce-backend->>ecommerce-backend : create a ecommerce-backend coupon
+ ecommerce-backend->>ecommerce-backend : add the coupon to the order
+ finalUser->>ecommerce-backend: enter coupon B CibleR in the order
+ ecommerce-backend->>ecommerce-backend: if coupon is not a ecommerce-backend coupon
+ ecommerce-backend->>backend : POST giftCode/Validate
+ backend->>ecommerce-backend : canUse = true, combinable = true
+ ecommerce-backend->>ecommerce-backend : create a ecommerce-backend coupon
+ ecommerce-backend->>ecommerce-backend : add the coupon to the order
+ finalUser->>ecommerce-backend : make the order with 2 coupons
+ ecommerce-backend->>backend : POST campaignBehaviors/order with CibleR coupons
  backend->>backend : update state giftCode / prize
  ```
 
- ### Sequence diagram Two Coupons KO
+### Sequence diagram Two Coupons KO
 
  ```mermaid
  sequenceDiagram
- finalUser->>shopify: enter coupon A CibleR in the order
- shopify->>shopify: if the coupon is not a shopify coupon
- shopify->>backend : POST giftCode/Validate
- backend->>shopify : canUse = true, combinable = true
- shopify->>shopify : create a shopify coupon
- shopify->>shopify : add the coupon to the order
- finalUser->>shopify: enter coupon B CibleR in the order
- shopify->>shopify: if coupon is not a shopify coupon
- shopify->>backend : POST giftCode/Validate
- backend->>shopify : canUse = true, combinable = false
- shopify->>shopify : Do not create shopify coupon
- finalUser->>shopify : make the order with only 1 coupon (A)
- shopify->>backend : POST campaignBehaviors/order with coupon A CibleR
+ finalUser->>ecommerce-backend: enter coupon A CibleR in the order
+ ecommerce-backend->>ecommerce-backend: if the coupon is not a ecommerce-backend coupon
+ ecommerce-backend->>backend : POST giftCode/Validate
+ backend->>ecommerce-backend : canUse = true, combinable = true
+ ecommerce-backend->>ecommerce-backend : create a ecommerce-backend coupon
+ ecommerce-backend->>ecommerce-backend : add the coupon to the order
+ finalUser->>ecommerce-backend: enter coupon B CibleR in the order
+ ecommerce-backend->>ecommerce-backend: if coupon is not a ecommerce-backend coupon
+ ecommerce-backend->>backend : POST giftCode/Validate
+ backend->>ecommerce-backend : canUse = true, combinable = false
+ ecommerce-backend->>ecommerce-backend : Do not create ecommerce-backend coupon
+ finalUser->>ecommerce-backend : make the order with only 1 coupon (A)
+ ecommerce-backend->>backend : POST campaignBehaviors/order with coupon A CibleR
  backend->>backend : Update state giftCode / prize
  ```
 
- ### Sequence diagram Two Coupons KO
+### Sequence diagram Two Coupons KO
 
  ```mermaid
  sequenceDiagram
- finalUser->>shopify: enter coupon A CibleR in the order
- shopify->>shopify: if the coupon is not a shopify coupon
- shopify->>backend : POST giftCode/Validate
- backend->>shopify : canUse = true, combinable = false
- shopify->>shopify : create a shopify coupon
- shopify->>shopify : add the coupon to the order
- finalUser->>shopify: enter coupon B CibleR in the order
- shopify->>shopify: if coupon is not a shopify coupon
- shopify->>backend : POST giftCode/Validate
- backend->>shopify : canUse = true, combinable = true
- shopify->>shopify : Do not create shopify coupon
- finalUser->>shopify : make the order with only 1 coupon (A)
- shopify->>backend : POST campaignBehaviors/order with coupon A CibleR
+ finalUser->>ecommerce-backend: enter coupon A CibleR in the order
+ ecommerce-backend->>ecommerce-backend: if the coupon is not a ecommerce-backend coupon
+ ecommerce-backend->>backend : POST giftCode/Validate
+ backend->>ecommerce-backend : canUse = true, combinable = false
+ ecommerce-backend->>ecommerce-backend : create a ecommerce-backend coupon
+ ecommerce-backend->>ecommerce-backend : add the coupon to the order
+ finalUser->>ecommerce-backend: enter coupon B CibleR in the order
+ ecommerce-backend->>ecommerce-backend: if coupon is not a ecommerce-backend coupon
+ ecommerce-backend->>backend : POST giftCode/Validate
+ backend->>ecommerce-backend : canUse = true, combinable = true
+ ecommerce-backend->>ecommerce-backend : Do not create ecommerce-backend coupon
+ finalUser->>ecommerce-backend : make the order with only 1 coupon (A)
+ ecommerce-backend->>backend : POST campaignBehaviors/order with coupon A CibleR
  backend->>backend : Update state giftCode / prize
  ```
 
- #### API request
+#### API request
  Request must be done server side when a coupon is entered by the end user.
- If coupon is not a shopify coupon, you must call the API to verifiy if the coupon is a CibleR coupon and get the values of the coupon.
+ If coupon is not one of your coupon, you must call the API to verifiy if the coupon is a CibleR coupon and get the values of the coupon.
 
  ```http
   POST :  [ENV]/api/giftCodes/validate/{customerId}
   ```
 
- ##### Exemple de body
+##### Exemple de body
  ```JSON
  {
    "email" : "christine@orange.fr",
@@ -199,7 +212,7 @@ Call this API server side (Your Site --> CibleR) for each paid order.
  }
   ```
 
- ##### Response example
+##### Response example
  When coupon is valid.
  ```JSON
  {
@@ -225,7 +238,7 @@ When coupon is not valid
  }
  ```
 
- #### Response Properties definitions
+#### Response Properties definitions
 
  |  Property      | Type           | Description                                                                                         | Mandatory |
  |:----------------|:---------------|:----------------------------------------------------------------------------------------------------|:----------|:---|
