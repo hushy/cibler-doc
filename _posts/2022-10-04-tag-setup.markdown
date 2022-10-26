@@ -2,10 +2,6 @@
 The CibleR js tag will allow you to track user behavior, get targeted promotions based on navigation events and display content configured in CibleR campaigns.
 
 
-# 1 Installation HTML
-You can install the CibleR JavaScript tracking and rendering tag by adding a tag to your website using a tag container or directly on page.
-Replace your customerId (find it here :https://admin.cibler.com/Account/Settings) in the code below.
-
 # Overview
 The CibleR js tag will allow you to track user behavior, get targeted promotions based on navigation events and display content configured in CibleR campaigns.
 
@@ -49,41 +45,6 @@ By default CibleR will track the following informations:
 - time since last today
 
 To send a custom event :
-// Enabling the debug mode flag is useful during implementation,
-// but it's recommended you remove it for production
-you can enable debugmode by setting the querystring ciblerdebug=true in your current url.
-
-Once the initial code snippet has run, the `wio` object is available globally.
-
-# 2. Send Data
-By default CibleR will track the following informations:
-**Navigation Context:**
-- url: the full url with query strings
-- domain: the host domain
-- device: mobile/desktop
-
-**Source :information about the source of trafic**
-- type : (direct/social/organic_search/paid_search/shopping)
-- site : google/facebook/instagram etc...
-- utmSource
-- utmCampaign
-- origin
-
-**Landing Page Context :: All the data above are stored for the current and the user landing page**
-
-**Aggrated data:**
-**Number of events per session/day/total for the following events:**
-- pageView
-- click
-- exit
-  **Session information:**
-- session number
-- session duration
-- time since last Session
-- time since last today
-
-To send a custom event :
-
 
     name="add_to_basket"
     action="user_clicked"
@@ -106,55 +67,22 @@ The tag will automatically make another call to retrieve the content of every el
 In this section you'll set up advanced tracking for your website to take take advantage of the full array of feature available in CibleR.
 These settings can be setup in pure javascript or using a google tag manager as intermediary layer.
 First initialize the advanced context object
-[See advanced tracking setup]
-
-Moving on to campaign triggers.
-
-# 3. Triggers
-A Trigger is an event suceptible of delivering a campaign to an end user. A trigger event will send the latest user data to our server and return the campaigns eligible for display.
-
-The default trigger is the pageview event sent after a page is fully loaded. To add custom triggers call the previous track function with parameter trigger set to "true".
-
-These trigger will result in an API call to https://cibler.io/api/campaigns/eligibility/?customerId={{customerId}}. The result of this api call contains the eligibility of the user to the campaign and information about the incentive.
-
-The tag will automatically make another call to retrieve the content of every eligible campaign and display the content except if the rendering tag is disabled, no content is set or if an external content integration has been setup.
-
-# 4. Advanced features
-In this section you'll set up advanced tracking for your website to take take advantage of the full array of feature available in CibleR.
-These settings can be setup in pure javascript or using a google tag manager as intermediary layer.
-First initialize the advanced context object
 
     //initialize context object
     ciblerContext = {}
-​
+
 # PageType
 Page type is a way to flag the type of page of your website, below is a list of commonly tagged page types
-LOGIN: 'login',
-CUSTOMER_ZONE: 'customer_zone',
-ORDER_CONFIRMATION: 'order_confirmation',
-DELIVERY_CHOICE: 'delivery',
-PAYMENT_CHOICE: 'payment',
-CART: 'cart',
-PRODUCT_PAGE: 'product_page',
-PRODUCT_LIST: 'product_list',
-HOME: 'home',
-SHOWCASE: 'showcase',
-#PageType
-Page type is a way to flag the type of page of your website, below is a list of commonly tagged page types
-LOGIN: 'login',
-CUSTOMER_ZONE: 'customer_zone',
-ORDER_CONFIRMATION: 'order_confirmation',
-DELIVERY_CHOICE: 'delivery',
-PAYMENT_CHOICE: 'payment',
-CART: 'cart',
-PRODUCT_PAGE: 'product_page',
-PRODUCT_LIST: 'product_list',
-HOME: 'home',
-SHOWCASE: 'showcase',
-
-
-
-    ciblerContext.pageType="";
+- LOGIN: 'login',
+- CUSTOMER_ZONE: 'customer_zone',
+- ORDER_CONFIRMATION: 'order_confirmation',
+- DELIVERY_CHOICE: 'delivery',
+- PAYMENT_CHOICE: 'payment',
+- CART: 'cart',
+- PRODUCT_PAGE: 'product_page',
+- PRODUCT_LIST: 'product_list',
+- HOME: 'home',
+- SHOWCASE: 'showcase',
 
 
 # Ecommerce tracking
@@ -165,14 +93,131 @@ CibleR will gather Product and Cart data from the GTM datalayer, make sure that 
 
 **Manual**
 To manually setup the ecommerce tracking add the following code to your pages before cibler is loaded
-# Product
+#Product
+```
 
-    enter code hereds
+//Add product data
+ciblerContext.product={
+  url: product_page_uri,
+  productId: article_id,
+  productEAN: product_EAN,
+  name: product_name,      
+  price: parseFloat(product_price),
+  priceCurrencyCode: 'eur',
+  availability: quantity > 0,
+  category: category_id,
+  description: category_name,
+  brand: product_brand_name,
+}
+```
 
-# Ecommerce tracking
-**RECOMMANDED METHOD: GTM**
-If your website is using GTM you can setup the ecommerce tracking using this guide
-https://developers.google.com/analytics/devguides/collection/ua/gtm/enhanced-ecommerce
-CibleR will gather Product and Cart data from the GTM datalayer, make sure that the datalayer is set before the cibler tag embed.
 
-**Manual**
+#Cart info
+```
+//Add cart data
+ciblerContext.cart={
+  count : cnt
+  total: parseFloat(cart_amount),
+  items: [
+  {
+  orderType: 'Standard',
+  productId: btnLines[i].id,
+  quantity:0,
+  name: 'test',
+  categoryId:0,
+  sellerId: 0,
+  unitPrice: price
+  },
+  ...
+  ]
+}
+```
+**Cart event :**
+When a product is added or removed from a basket update the ciblerContext.cart data and call the following method.
+
+```
+WIO.onBasketAdd()
+```
+
+#Customer identification
+Customer identification is used to build a behavior history for your user and allowing you to target incentives based on these data across multiple channel (email, sms etc...) .
+
+```
+ciblerContext.customer={
+  authStatus: 'anonymous' or 'ok',
+  email: email,
+  phone: phone,
+  customerReference:customer_id
+}
+```
+
+#Geolocation
+add the following code to your page to use geolocation to target your incentives
+
+```
+ciblerContext.geolocation='#latitude;#longitude'
+```
+
+#Search
+
+#Search
+```
+ciblerContext.search={
+  keywords:'word1,word2',
+  results:10,
+  filter:'videogame'
+}
+```
+#Adding custom Data
+For any of the advanced tracking above you can add custom data by simply adding a field in the javascript object for instance to add a "color" value to a product tracking add the following code.
+
+```
+ciblerContext.product.color = "red"
+```
+You can add any custom field to the ciblerContext object.
+
+
+#Transaction
+The recommanded way to track transaction is to use the server side API   [CibleR API implementation](https://docs.cibler.io/2022/10/04/order-full-documentation.html)
+For ease of use you can setup your tracking using javascript, please note that this method may lead to missed transactions due to cookie consent,latency or ad blockers.
+
+On a confirmed transaction (order confirmation page) add the following data to ciblerContext
+
+
+```
+ciblerContext.transaction ={
+  orderContext: {
+        key: this.customerKey, //Your API KEY
+        country: "fr",
+        email: email,
+        customerGuid: customerId,
+        status: "COMPLETED",
+        refer: 'google ads'
+      },
+      orderInformation: {
+        clientStatus: 'Standard', // VIR/STANDARD/GOLD or other CRM segmentation
+        orderId: transaction_id,
+        totalSpent: total tax included -discount,
+        tax: tax,
+        giftCode: coupon used,
+        paymentMethod: "card",
+        shippingCost: shipping,
+        dataSource: 'preproduction', //Environment, channel, Language
+        discountAmount: 10,
+        orderLines: [
+        {
+        category: categoryId,
+        orderType: 'Standard', // Marketplace,Digital,
+        productId: id,
+        quantity: quantity,
+        name: name,
+        categoryId: 0,
+        sellerId: sellerId,
+        unitPrice: price,
+        tax: tax
+        }
+       ]
+       ...
+      }
+}```
+
